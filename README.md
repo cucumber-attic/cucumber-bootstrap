@@ -25,9 +25,17 @@ langauge is not supported, please say so on the ML, because there may be
 other alternatives, including supporting a foreign language via the wire
 protocol or adding support for another language in Gherkin.
 
-Other than that, all you need to do is get Cucumber running with Aruba,
-define the step used in the features to execute the temporary CLI
-application, and then begin executing the bootstrap scenarios.
+Other than that, you need to do four things to start using the
+bootstrap:
+
+1. Setup Cucumber running with Aruba
+2. Create the features directory that will, temporarily, hold the
+   bootstrap features
+3. Create a binary named `cucino` that takes a single filename argument
+   and reads, executes and reports on the Gherkin found inside it
+4. Tell Aruba where to find that binary
+
+Once these steps are done, you're ready to get started.
 
 == Links
 
