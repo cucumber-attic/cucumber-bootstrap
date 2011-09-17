@@ -1,11 +1,11 @@
-== What
+## What
 
 Cucumber bootstrap aims to alleviate the chicken and egg problem with
 getting new versions of Cucumber up and running. Once its tests are
 passing, implementors can stop using the bootstrap and start executing
 the real Cucumber features (see links below) as development continues.
 
-== How
+## How
 
 We use a mature version of Cucumber and Aruba to drive a simple command
 line application supplied by the implementor and then perform golden
@@ -16,7 +16,7 @@ features in the Cucumber features repository (see the links below), and
 stop running the bootstrap features altogether. That being said, this
 kind of testing is very useful to get started.
 
-== Prerequisites
+## Prerequisites
 
 The major prerequisite to getting started is the ability to parse
 Gherkin-formatted features. The Gherkin project currently provides
@@ -37,7 +37,7 @@ bootstrap:
 
 Once these steps are done, you're ready to get started.
 
-== Links
+## Links
 
 * [Cucumber features](https://github.com/cucumber/cucumber-features)
 * [Cucumber ML](https://groups.google.com/forum/#!forum/cukes)
