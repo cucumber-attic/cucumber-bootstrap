@@ -1,3 +1,5 @@
+# Cucumber Bootstrap
+
 ## What
 
 Cucumber bootstrap aims to alleviate the chicken and egg problem with
