@@ -127,7 +127,7 @@ Feature: Bootstrap a Cucumber implementation
           \"\"\"
         Then the result is 6
 
-      Scenario: Multiply a table incorrectly
+      Scenario: Multiply a table
         When these numbers are multiplied:
           | 2 |
           | 4 |

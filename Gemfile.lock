@@ -41,3 +41,4 @@ PLATFORMS
 DEPENDENCIES
   aruba
   cucumber
+  rspec-expectations

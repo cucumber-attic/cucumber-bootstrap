@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'gherkin'
+require 'rspec/expectations'
 
 class Scenario
   attr_reader :uri, :steps
@@ -10,13 +11,18 @@ class Scenario
     @uri = uri
     @steps = steps
   end
+
+  def each(&block)
+    @steps.each(&block)
+  end
 end
 
 class Reporter
-  attr_reader :scenarios
+  attr_reader :scenarios, :results
 
   def initialize(scenarios)
     @scenarios = scenarios
+    @results = {}
   end
 
   def scenario_count
@@ -27,8 +33,59 @@ class Reporter
     scenarios.inject(0) { |acc, scenario| acc + scenario.steps.count }
   end
 
-  def results(output)
+  def record(scenario, result)
+    results[scenario] = result
+  end
+
+  def print_results(output)
     output.puts "Results: Scenarios - #{scenario_count}, Steps - #{step_count}"
+    results.each do |scenario, result|
+      output.puts "#{scenario}: #{result}"
+    end
+  end
+end
+
+class Context
+  include RSpec::Matchers
+
+  attr_reader :mappings, :result
+
+  def initialize(mappings)
+    @mappings = mappings
+    @result = :not_executed
+  end
+
+  def execute(scenario)
+    scenario.each do |step|
+      mapping = mappings.find do |from, to|
+        from == step[0]
+      end || raise("Can't find mapping for #{step}")
+      instance_exec(step.last, &mapping.last)
+    end
+    @result = :passed
+  rescue RSpec::Expectations::ExpectationNotMetError
+    @result = :failed
+  end
+end
+
+class Executor
+  attr_reader :reporter, :mappings
+
+  def initialize(reporter)
+    @reporter = reporter
+    @mappings = {}
+  end
+
+  def map(step, &body)
+    mappings[step] = body
+  end
+
+  def execute(scenarios)
+    scenarios.each do |scenario|
+      ctx = Context.new(mappings)
+      ctx.execute(scenario)
+      reporter.record(scenario.uri, ctx.result)
+    end
   end
 end
 
@@ -89,6 +146,7 @@ class Compiler
   def step(step)
     action = [step.name]
     action << step.doc_string.value if step.doc_string
+    action << step.rows if step.rows
     @builder.add_step(action)
   end
 
@@ -101,11 +159,35 @@ class Compiler
   end
 end
 
+class Calculator
+  attr_reader :result
+
+  def add(n)
+    @result ||= 0
+    @result += n
+  end
+
+  def multiply(n)
+    @result ||= 1
+    @result *= n
+  end
+end
+
 if __FILE__ == $0
-  gherkin = ARGF.read
+  gherkin = File.read(ARGV[0])
   builder = Builder.new
   compiler = Compiler.new(builder)
   compiler.compile(gherkin)
-  reporter = Reporter.new(builder.scenarios)
-  reporter.results(STDOUT)
+  scenarios = builder.scenarios
+  reporter = Reporter.new(scenarios)
+  if ARGV[0] == "execution.feature"
+    executor = Executor.new(reporter)
+    executor.map("a calculator") { @calculator = Calculator.new }
+    executor.map("these numbers are summed together:") { |str| str.split.each { |n| @calculator.add(n.to_i) } }
+    executor.map("the result is 6") { @calculator.result.should be(6) }
+    executor.map("the result is 42") { @calculator.result.should be(42) }
+    executor.map("these numbers are multiplied:") { |table| table.each { |row| @calculator.multiply(row.cells[0].to_i) } }
+    executor.execute(scenarios)
+  end
+  reporter.print_results(STDOUT)
 end
