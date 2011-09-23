@@ -17,6 +17,18 @@ class Scenario
   end
 end
 
+DocString = Class.new(String)
+
+class DataTable
+  def initialize(rows)
+    @rows = rows
+  end
+
+  def each(&block)
+    @rows.each(&block)
+  end
+end
+
 class Reporter
   attr_reader :scenarios, :results
 
@@ -145,8 +157,8 @@ class Compiler
 
   def step(step)
     action = [step.name]
-    action << step.doc_string.value if step.doc_string
-    action << step.rows if step.rows
+    action << DocString.new(step.doc_string.value) if step.doc_string
+    action << DataTable.new(step.rows) if step.rows
     @builder.add_step(action)
   end
 
