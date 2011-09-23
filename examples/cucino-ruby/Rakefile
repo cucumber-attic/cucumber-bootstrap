@@ -1,0 +1,7 @@
+task :default do
+  ENV["PATH"] = [ENV["PATH"], `pwd`.chomp].join(":")
+  if ENV["LINE"]
+    line = ":#{ENV["LINE"]}"
+  end
+  sh "cucumber ../../features/bootstrap.feature#{line}"
+end

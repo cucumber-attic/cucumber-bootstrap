@@ -1,0 +1,111 @@
+#!/usr/bin/env ruby
+
+require 'gherkin'
+
+class Scenario
+  attr_reader :uri, :steps
+  attr_accessor :tags
+
+  def initialize(uri, *steps)
+    @uri = uri
+    @steps = steps
+  end
+end
+
+class Reporter
+  attr_reader :scenarios
+
+  def initialize(scenarios)
+    @scenarios = scenarios
+  end
+
+  def scenario_count
+    scenarios.count
+  end
+
+  def step_count
+    scenarios.inject(0) { |acc, scenario| acc + scenario.steps.count }
+  end
+
+  def results(output)
+    output.puts "Results: Scenarios - #{scenario_count}, Steps - #{step_count}"
+  end
+end
+
+class Builder
+  attr_reader :scenarios
+
+  def initialize
+    @bg_steps = []
+    @body_steps = []
+    @current = nil
+    @scenarios = []
+  end
+
+  def record(uri, tags)
+    @current = uri
+    @current_tags = tags
+  end
+
+  def replay
+    if @current
+      actions = @bg_steps.dup + @body_steps
+      scenario = Scenario.new(@current, *actions)
+      scenario.tags = @current_tags
+      scenarios.push(scenario)
+      @body_steps = []
+      @current = nil
+      @current_tags = nil
+    end
+  end
+
+  def add_step(parts)
+    if @current
+      @body_steps.push(parts)
+    else
+      @bg_steps.push(parts)
+    end
+  end
+end
+
+
+class Compiler
+  def initialize(builder)
+    @parser = ::Gherkin::Parser::Parser.new(self, true, "root", false)
+    @builder = builder
+  end
+
+  def compile(content)
+    uri_location = ""
+    line_offset = 0
+    @parser.parse(content, uri_location, line_offset)
+  end
+
+  def scenario(scenario)
+    @builder.replay
+    @builder.record(scenario.name, scenario.tags.collect(&:name))
+  end
+
+  def step(step)
+    action = [step.name]
+    action << step.doc_string.value if step.doc_string
+    @builder.add_step(action)
+  end
+
+  def eof
+    @builder.replay
+  end
+
+  def method_missing(name, *args, &blk)
+    #puts "name: #{name}, args: #{args}"
+  end
+end
+
+if __FILE__ == $0
+  gherkin = ARGF.read
+  builder = Builder.new
+  compiler = Compiler.new(builder)
+  compiler.compile(gherkin)
+  reporter = Reporter.new(builder.scenarios)
+  reporter.results(STDOUT)
+end

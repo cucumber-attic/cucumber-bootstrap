@@ -21,7 +21,7 @@ Feature: Bootstrap a Cucumber implementation
     When I successfully run `cucino single.feature`
     Then the output should contain:
       """
-      Results: Features - 1, Scenarios - 1, Steps - 3
+      Results: Scenarios - 1, Steps - 3
 
       """
 
@@ -43,7 +43,7 @@ Feature: Bootstrap a Cucumber implementation
     When I successfully run `cucino multiple.feature`
     Then the output should contain:
       """
-      Results: Features - 2, Scenarios - 2, Steps - 6
+      Results: Scenarios - 2, Steps - 6
 
       """
 
@@ -66,7 +66,7 @@ Feature: Bootstrap a Cucumber implementation
     When I successfully run `cucino background.feature`
     Then the output should contain:
       """
-      Results: Features - 1, Scenarios - 2, Steps - 6
+      Results: Scenarios - 2, Steps - 6
 
       """
 
@@ -88,7 +88,7 @@ Feature: Bootstrap a Cucumber implementation
     When I successfully run `cucino doc_string.feature`
     Then the output should contain:
       """
-      Results: Features - 1, Scenarios - 1, Steps - 3
+      Results: Scenarios - 1, Steps - 3
 
       """
 
@@ -107,7 +107,7 @@ Feature: Bootstrap a Cucumber implementation
     When I successfully run `cucino data_table.feature`
     Then the output should contain:
       """
-      Results: Features - 1, Scenarios - 1, Steps - 3
+      Results: Scenarios - 1, Steps - 3
 
       """
 
@@ -135,10 +135,10 @@ Feature: Bootstrap a Cucumber implementation
         Then the result is 42
 
       """
-    When I successfully run `cucino data_table.feature`
+    When I successfully run `cucino execution.feature`
     Then the output should contain:
       """
-      Results: Features - 1, Scenarios - 2, Steps - 6
+      Results: Scenarios - 2, Steps - 6
       Sum a list: passed
       Multiply a table: failed
 

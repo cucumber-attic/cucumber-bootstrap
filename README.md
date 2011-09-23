@@ -1,5 +1,7 @@
 # Cucumber Bootstrap
 
+See the examples directory for a bootstrapped Ruby implementation.
+
 ## What
 
 Cucumber bootstrap aims to alleviate the chicken and egg problem with
