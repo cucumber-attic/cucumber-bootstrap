@@ -43,5 +43,5 @@ Once these steps are done, you're ready to get started.
 
 ## Links
 
-* [Cucumber features](https://github.com/cucumber/cucumber-features)
+* [Cucumber TCK Features](https://github.com/cucumber/cucumber-tck)
 * [Cucumber ML](https://groups.google.com/forum/#!forum/cukes)

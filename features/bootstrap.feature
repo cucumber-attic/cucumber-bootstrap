@@ -6,7 +6,7 @@ Feature: Bootstrap a Cucumber implementation
 
   From that point on the scenarios should guide you on your way.
   When you are able to begin executing the real feature files from
-  the cucumber-features project, please throw "cucino" away. 
+  the cucumber-tck project, please throw "cucino" away. 
 
   Scenario: Compiling Feature, Scenario and Steps
     Given a file named "single.feature" with:
